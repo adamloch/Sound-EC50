@@ -22,7 +22,7 @@ class RandomGain(object):
 
 class ToTensor(object):
     def __call__(self, sound, label):
-        return (torch.from_numpy(sound), torch.from_numpy(label))
+        return (torch.from_numpy(sound).unsqueeze(0).float(), torch.from_numpy(label).long())
 
 class RandomCrop(object):
     def __init__(self, size):
@@ -39,7 +39,7 @@ class ESC50_Dataset(Dataset):
         self.random_gain = RandomGain(6)
         self.classes = n_classes
         self.tensor = ToTensor()
-        self.random_crop = RandomCrop(24000)
+        self.random_crop = RandomCrop(66650)
 
         self.df = pd.read_csv(path_csv)
         classes = self.df.category.unique().tolist()
@@ -63,10 +63,12 @@ class ESC50_Dataset(Dataset):
 
         sound = self.random_gain(self.normalize(sound))
         #sound = np.expand_dims(sound, axis=0)
-        label = np.zeros(self.classes)
-        label[sample.iloc[0,1]] = 1.0
-        sound, label = self.tensor(sound, label)
-        return (torch.unsqueeze(torch.unsqueeze(sound, 0),0).float(), torch.unsqueeze(torch.unsqueeze(label,0),0).float())
+        #label = np.zeros(self.classes)
+        #label[sample.iloc[0,1]] = 1.0
+        label = np.array([sample.iloc[0,1]], np.int32)
+        lab = np.array(sample.iloc[0,1])
+        sound, label = self.tensor(sound, lab)
+        return (sound, label)
 
     def __len__(self):
         return self.df.shape[0]

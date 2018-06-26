@@ -30,7 +30,7 @@ def plot_specgram(sound_names, raw_sounds):
     i = 1
     for n, f in zip(sound_names, raw_sounds):
         plt.subplot(10, 1, i)
-        specgram(np.array(f), Fs=22050)
+        specgram(np.array(f), Fs=66650)
         plt.title(n.title())
         i += 1
     plt.suptitle("Figure 2: Spectrogram", x=0.5, y=0.915, fontsize=18)
