@@ -7,8 +7,10 @@ from model_gen import Net, Netv1
 from dataset import ESC50_Dataset
 from torchsummary import summary
 
+
 def save_checkpoint(state, acc):
     torch.save(state, str(acc)+'best.plk')
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -19,7 +21,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9)
 
 dataset = ESC50_Dataset('esc50.csv', '/home/adam/ESC-50-master/audio/')
 dataset_test = ESC50_Dataset(
-    'esc50.csv', '/home/adam/ESC-50-master/audio/', folds=[4, 5])
+    'esc50.csv', '/home/adam/ESC-50-master/audio/', folds=[4, 5], test=True)
 
 trainloader = torch.utils.data.DataLoader(
     dataset, batch_size=4, shuffle=True, num_workers=2)
@@ -60,7 +62,7 @@ for epoch in range(1000):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     print('Accuracy of the network on the 10000 test images: %d %%' % (
-    100 * correct / total))
+        100 * correct / total))
     acc = 100 * correct / total
     if acc > prevacc:
         save_checkpoint(net, acc)
