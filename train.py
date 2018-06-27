@@ -14,23 +14,24 @@ def save_checkpoint(state, acc):
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
-net = Netv1()
+net = Net()
 net.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9)
 
-dataset = ESC50_Dataset('esc50.csv', '/home/adam/ESC-50-master/audio/')
+dataset = ESC50_Dataset('esc50.csv', '/home/adamloch/ESC-50-master/audio/')
 dataset_test = ESC50_Dataset(
-    'esc50.csv', '/home/adam/ESC-50-master/audio/', folds=[4, 5], test=True)
+    'esc50.csv', '/home/adamloch/ESC-50-master/audio/', folds=[4, 5], test=True)
 
 trainloader = torch.utils.data.DataLoader(
-    dataset, batch_size=4, shuffle=True, num_workers=2)
+    dataset, batch_size=16, shuffle=True, num_workers=4)
 testloader = torch.utils.data.DataLoader(
-    dataset, batch_size=4, shuffle=True, num_workers=2)
+    dataset, batch_size=16, shuffle=True, num_workers=4)
 
 classes = dataset.dictionary
 best = 0
 prevacc = -1
+
 for epoch in range(1000):
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -48,7 +49,7 @@ for epoch in range(1000):
         # print statistics
         running_loss += loss.item()
         if i % 100 == 99:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
+            print('[%d, %5d] loss: %.3f,' %
                   (epoch + 1, i + 1, running_loss / 2000))
             running_loss = 0.0
     correct = 0

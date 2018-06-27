@@ -93,7 +93,7 @@ class Padding(object):
 
 
 class ESC50_Dataset(Dataset):
-    def __init__(self, path_csv, esc_50_path, classes='all', folds=[1, 2, 3], n_classes=50, size=24017, test=False):
+    def __init__(self, path_csv, esc_50_path, classes='all', folds=[1, 2, 3], n_classes=50, size=66650, test=False):
         self.size = size
         self.istest = test
         self.normalize = Normalize(32768.0)
