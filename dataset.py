@@ -22,15 +22,16 @@ class RandomGain(object):
 
 class ToTensor(object):
     def __call__(self, sound, label):
-        return (torch.from_numpy(sound).unsqueeze(0).float(), torch.from_numpy(label).float())
+        tmp = torch.from_numpy(sound).unsqueeze(0).float() 
+        return (torch.clamp(tmp, -1, 1), torch.from_numpy(label).float())
 
 class RandomCrop(object):
     def __init__(self, size):
         self.size = size
     def __call__(self, sound):
         org_size = len(sound)
-        start = random.randint(0, self.size)
-        return sound[start: start + max(15000, start)]
+        start = random.randint(0, org_size-self.size)
+        return sound[start: start + self.size]
         
 class Padding(object):
     def __init__(self, width):
@@ -77,7 +78,7 @@ class ESC50_Dataset(Dataset):
        # print(sound.shape)
         sound = self.pad(sound)
         #print(sound.shape)
-        sound = self.random_gain(self.normalize(sound))
+        sound = self.normalize(self.random_gain(sound))
         #sound = np.expand_dims(sound, axis=0)
         label = np.zeros(self.classes)
         label[sample.iloc[0,1]] = 1.0
