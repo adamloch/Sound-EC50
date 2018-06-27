@@ -129,7 +129,7 @@ class ESC50_Dataset(Dataset):
         sound = self.random_crop(sound)
 
         sound = self.random_gain(sound)
-        
+
         if not self.istest:
             sound = self.pitch_change(sound)
             sound = self.speed_change(sound)
@@ -144,7 +144,8 @@ class ESC50_Dataset(Dataset):
         lab = np.array(sample.iloc[0, 1])
         sound, label = self.tensor(sound, label)
 
-        return (sound, lab)
+
+        return (sound, label)
 
     def __len__(self):
         return self.df.shape[0]
