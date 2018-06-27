@@ -51,7 +51,6 @@ class Net(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-        print(x.shape)
         x = self.elu1(self.bn1(self.conv1(x)))
         x = self.elu2(self.bn2(self.conv2(x)))
         x = F.max_pool1d(x, 64)
@@ -114,7 +113,6 @@ class Netv1(nn.Module):
         x = self.elu3(self.bn3(self.conv3(x)))
         
         x = F.max_pool2d(x, (3, 3))
-
         x = self.elu4(self.bn4(self.conv4(x)))
         x = F.max_pool2d(x, (1, 3))
         x = x.view(-1, 50*14*11)
